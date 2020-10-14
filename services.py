@@ -10,6 +10,7 @@ def get_user_model(user_id):
 
 
 def get_user_ids():
-    return [user_id for user_id in User.select()]
+    return [user_id for user_id in User.select().where(User.subscribe == True)]
 
 
+print(get_user_ids())
