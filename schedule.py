@@ -1,6 +1,7 @@
 from nauschedule import NAUScheduler
 import texts
 from datetime import datetime
+from services import get_user_model, get_user_ids
 
 nau = NAUScheduler()
 
@@ -31,6 +32,22 @@ def get_schedule_per_day(user, day):
             pair.update({'num': pair_num, 'time': texts.PAIR_TIME[pair_num]})
             pairs.append(texts.pair_template(pair))
     return pairs
+
+
+def send_pairs_for_users(bot, morning=False, evening=False):
+    pairs = None
+    user_ids = get_user_ids()
+    for user_id in user_ids:
+        bot.send_message(user_id,
+                         f'{"Доброе утро, расписание на сегодня:" if morning else "Добрый вечер, расписание на завтра"}'
+                         )
+        user = get_user_model(user_id)
+        if morning:
+            pairs = get_today_schedule(user)
+        elif evening:
+            pairs = get_tomorrow_schedule(user)
+        for pair in pairs:
+            bot.send_message(user_id, pair)
 
 
 def get_tomorrow_schedule(user):
