@@ -5,6 +5,7 @@ import schedule
 import services
 import time
 from model import db, User
+from apscheduler.schedulers.background import BackgroundScheduler
 
 bot = telebot.TeleBot('1351639031:AAGbYDKNCdXQbSPCzvqpWTWQiQZNBRsnt8k')
 
@@ -146,8 +147,30 @@ def schedule_day_handler(message):
 
 
 if __name__ == '__main__':
+
+    scheduler = BackgroundScheduler()
+
     if db.connect():
         db.create_tables([User])
+
+    scheduler.add_job(schedule.send_pairs_for_users,
+                      'cron',
+                      day_of_week='0-5',
+                      hour='06',
+                      minute='30',
+                      args=(bot,),
+                      kwargs={'morning': True}
+                      )
+    scheduler.add_job(schedule.send_pairs_for_users,
+                      'cron',
+                      day_of_week='0-5',
+                      hour='20',
+                      minute='30',
+                      args=(bot,),
+                      kwargs={'evening': True}
+                      )
+
+    scheduler.start()
 
     while True:
         try:
