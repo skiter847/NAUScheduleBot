@@ -8,6 +8,7 @@ class User(Model):
     department_name = CharField()
     group_number = CharField()
     subgroup = IntegerField()
+    subscribe = BooleanField(default=False)
 
     class Meta:
         database = db
