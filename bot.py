@@ -176,5 +176,6 @@ if __name__ == '__main__':
         try:
             bot.polling()
         except Exception as e:
-            print(e)
+            with open('log.txt', 'w') as f:
+                f.write(e)
             time.sleep(13)
