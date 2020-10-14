@@ -15,6 +15,5 @@ class User(Model):
 
 
 def init_db():
-    db.connect()
-    db.create_tables([User], safe=True)
-
+    if not db.is_closed():
+        db.create_tables([User], safe=True)
