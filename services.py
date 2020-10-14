@@ -13,4 +13,3 @@ def get_user_ids():
     return [user_id for user_id in User.select().where(User.subscribe == True)]
 
 
-print(get_user_ids())

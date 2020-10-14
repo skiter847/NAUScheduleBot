@@ -4,7 +4,7 @@ import keyboards
 import schedule
 import services
 import time
-from model import db, User
+from model import init_db, User
 from apscheduler.schedulers.background import BackgroundScheduler
 
 bot = telebot.TeleBot('1351639031:AAGbYDKNCdXQbSPCzvqpWTWQiQZNBRsnt8k')
@@ -133,7 +133,14 @@ def set_user_data_handler(message):
 
 @bot.message_handler(func=lambda message: message.text == 'Рассылка')
 def subscribe_handler(message):
-    bot.send_message(message.chat.id, 'В разработке')
+    user = services.get_user_model(message.chat.id)
+    if user.subscribe:
+        user.subscribe = False
+        bot.send_message(message.chat.id, 'Вы отписались от рассылки')
+    else:
+        user.subscribe = True
+        bot.send_message(message.chat.id, 'Вы подписались на рассылку')
+    user.save()
 
 
 @bot.message_handler(regexp=r'[1/2]\.\w{3}')
@@ -150,8 +157,7 @@ if __name__ == '__main__':
 
     scheduler = BackgroundScheduler()
 
-    if db.connect():
-        db.create_tables([User])
+    init_db()
 
     scheduler.add_job(schedule.send_pairs_for_users,
                       'cron',
