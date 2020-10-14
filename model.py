@@ -12,3 +12,9 @@ class User(Model):
 
     class Meta:
         database = db
+
+
+def init_db():
+    db.connect()
+    db.create_tables([User], safe=True)
+
