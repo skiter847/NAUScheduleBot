@@ -4,10 +4,11 @@ import keyboards
 import schedule
 import services
 import time
+import os
 from model import init_db, User
 from apscheduler.schedulers.background import BackgroundScheduler
 
-bot = telebot.TeleBot('1351639031:AAGbYDKNCdXQbSPCzvqpWTWQiQZNBRsnt8k')
+bot = telebot.TeleBot(os.environ.get('TOKEN_NAU'))
 
 
 def get_subgroup_step(message, dep_name, group_number, update=False):
@@ -143,7 +144,7 @@ def subscribe_handler(message):
     user.save()
 
 
-@bot.message_handler(regexp=r'[1/2]\.\w{3}')
+@bot.message_handler(regexp=r'[1/2]\.[\w]{3}')
 def schedule_day_handler(message):
     if len(message.text) == 5:
         user = services.get_user_model(message.chat.id)
@@ -183,5 +184,5 @@ if __name__ == '__main__':
             bot.polling()
         except Exception as e:
             with open('log.txt', 'w') as f:
-                f.write(e)
+                f.write(str(e))
             time.sleep(13)
